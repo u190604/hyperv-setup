@@ -13,7 +13,7 @@ Notes:
 
 # GLOBAL PARAMS
 $VMName      = $null
-$ISOPath     = "C:\VM\iso\kickstart-almalinux-9.7-minimal.iso"
+$ISOPath     = "C:\VM\iso\kickstart-AlmaLinux-9.7-x86_64-minimal.iso"
 $NetworkMode = "External"
 $ExternalSwitchName = "External Switch"
 $ExternalNicName    = $null
@@ -125,8 +125,9 @@ function Resolve-VHDPathConflict([string]$Path, [string]$DefaultDir) {
 
 function Get-VHDSizeGB([int]$DefaultSizeGB) {
     do {
-        $inputSize = Read-Host "Enter disk size in GB (10-100) or press Enter for ${DefaultSizeGB}GB"
+        #$inputSize = Read-Host "Enter disk size in GB (10-100) or press Enter for ${DefaultSizeGB}GB"
         if ([string]::IsNullOrWhiteSpace($inputSize)) {
+            Write-Host "Disk size is 60 GB"
             return $DefaultSizeGB
         }
         if ([int]::TryParse($inputSize, [ref]$size) -and $size -ge 10 -and $size -le 100) {
@@ -433,13 +434,14 @@ try {
     if ([string]::IsNullOrWhiteSpace($defaultExternalSwitchName)) {
         $defaultExternalSwitchName = "External Switch"
     }
-    $switchInput = Read-Host "Enter external switch name or press Enter for '$defaultExternalSwitchName'"
-    if (-not [string]::IsNullOrWhiteSpace($switchInput)) {
-        $ExternalSwitchName = $switchInput
-    } else {
-        $ExternalSwitchName = $defaultExternalSwitchName
-    }
-    $null = Ensure-ExternalSwitch -SwitchName $ExternalSwitchName -NicName $ExternalNicName
+    #$switchInput = Read-Host "Enter external switch name or press Enter for '$defaultExternalSwitchName'"
+    Write-Host "Switch name: '$defaultExternalSwitchName'"
+    # if (-not [string]::IsNullOrWhiteSpace($switchInput)) {
+    #     $ExternalSwitchName = $switchInput
+    # } else {
+    #     $ExternalSwitchName = $defaultExternalSwitchName
+    # }
+    $null = Ensure-ExternalSwitch -SwitchName $defaultExternalSwitchName -NicName $ExternalNicName
 
     if ([string]::IsNullOrWhiteSpace($VMName)) {
         $VMName = Get-AvailableVMName "Enter VM name"
